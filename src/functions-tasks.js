@@ -161,23 +161,16 @@ function memoize(func) {
  */
 function retry(func, attempts) {
   let count = 0;
-  let temp;
-  function newFunc() {
-    try {
-      temp = func();
-    } catch (err) {
-      do {
+  return function newFunc() {
+    while (count < attempts) {
+      try {
+        return func();
+      } catch (error) {
         count += 1;
-        try {
-          temp = func();
-        } catch (error) {
-          console.log(error.name);
-        }
-      } while (count < attempts);
+      }
     }
-    return temp;
-  }
-  return newFunc;
+    return count;
+  };
 }
 
 /**
